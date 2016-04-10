@@ -29,35 +29,50 @@ for ($i=0; $i<$m; $i++){
 for ($i=0; $i<$m; $i++){
     $word=$tests[$i];
     $parenthese=false;
+    $nbpar=0;
     $letters_possible=[];
     $words_possible=$dictionary;
     $decalage=0;
     
-   // var_dump(str_split($word));
-    var_dump($words_possible);
     
     for ($x=0; $x<strlen($word)-1; $x++){//strlen car avec  les () moins char final
         
-        var_dump ($words_possible);
+    //    var_dump ($words_possible);
         if($word[$x]=="("){
             $parenthese=true;
             $decalage++;
-            echo"parenthesis ON \n";
+            $nbpar++;
+           
+       //   echo"parenthesis ON \n";
         }
         
         else if($word[$x]==")"){
             $parenthese=false;
             $to_remove=[];
-            echo "Parenthesis OFF \n";
+         //   echo "Parenthesis OFF \n";
             //on enleve le(s) mots pour lesques aucune lettre ne marche
             for($temp=0; $temp<count($words_possible); $temp++){
+            //    echo $words_possible[$temp]."\n";
                 if(!in_array($words_possible[$temp][$x-$decalage], $letters_possible)){
-                    unset($words_possible[$z]);
+                    array_push($to_remove, $temp);
                 }
+           //      echo $words_possible[$temp][$x-$decalage]."\n";
+                }
+            foreach($to_remove as $remove_index){
+                    unset($words_possible[$remove_index]);
+               
                 }
             
+            
                 $words_possible = array_values($words_possible);//reorder 
-            $decalage++;
+            $decalage;
+            if($nbpar > 1){
+               // $decalage ++;
+            }
+            
+            
+            $letters_possible=[];
+          //   var_dump ($words_possible);
         }
         
         
@@ -66,27 +81,35 @@ for ($i=0; $i<$m; $i++){
             if($parenthese){ //si il y a un doute
                 array_push($letters_possible, $word[$x]);
                 $decalage++;
-                echo $word[$x]."was added to letters_possible\n ";
+          //     echo $word[$x]." was added to letters_possible\n ";
                 
             }else{
                 
-                
+                $to_remove=[];
                 
                 for($ze=0; $ze<count($words_possible); $ze++){
-                    echo $words_possible[$ze][$x-$decalage]."<->".$word[$x];
+               //    echo $words_possible[$ze][$x-$decalage]."<->".$word[$x];
                     if($words_possible[$ze][$x-$decalage]!=$word[$x]){
-                        echo $words_possible[$ze][$x-$decalage]."!=".$word[$x];
-                        //unset($words_possible[$ze]);
+                    //    echo $words_possible[$ze][$x-$decalage]."!=".$word[$x];
+                        array_push($to_remove, $ze);
                     }
-                    echo"\n";
+                 //   echo"\n";
+                }
+                
+                foreach($to_remove as $remove_index){
+                    unset($words_possible[$remove_index]);
                 }
                 
                 $words_possible = array_values($words_possible);//reorder
+              //var_dump($words_possible);
             }
         }
+        
+
+        //echo $decalage.'   -';
       
     }
-    
+         
     echo 'Case #'.($i+1).': '.count($words_possible)."\n";
 
     
